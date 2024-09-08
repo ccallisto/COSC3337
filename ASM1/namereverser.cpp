@@ -2,16 +2,71 @@
 #include <fstream>
 //update this to include steps A-D, comment where they are specifically
 using namespace std;
+//----------------------------Structures for assignment, Q1 is below------------------------------------------------------//
 
+struct listNode{
+    string data;
+    listNode* next;
+};
+
+class singlyLinkedList{ //made this so the sort size is generic; sorry if im doing too much
+    //standard singly linked list with a head node, initialized with the record/struct listNode()
+    public:
+    listNode* head;
+    listNode* p1 = head;
+
+    singlyLinkedList(){
+        head = nullptr;
+    }
+
+    bool isEmpty(){
+        return head == nullptr;
+    }
+
+    void sortedInsert(string str){  //essentially just an insertion sort that moves pointers around based on cases
+        
+        listNode* newNode = new listNode();
+        newNode -> data = str;
+        newNode -> next = nullptr;
+
+        if (isEmpty()){ 
+            head = newNode;     //empty case
+            return;     
+        }
+        else if(str <=head->data){
+            newNode->next = head;
+            head = newNode;         //case for if the first node string is less than the head
+            return;
+        }
+        else{
+            p1 = head;
+            while(p1 -> next != nullptr && p1 -> next-> data < str){ //standard (middle or end) case
+                p1 = p1->next;
+            }
+        }
+        newNode -> next = p1 ->next;
+        p1-> next = newNode;
+
+    }
+    void printlist(){ //prints the list
+        listNode* current = head;
+        while (current != nullptr){
+            cout << current -> data << "\n";
+            current = current -> next;
+        }
+    }
+
+
+};
 int main(){
     //-------------------------------------------Question 1 ------------------------------------------------------//
 
-        char c;
+    char c;
     fstream infile;
     string filename;
-    cout << "enter file name to read text from";
+    cout << "enter file name to read text from; example file in directory will be called namelist.txt\n";
     cin >> filename;
-    //example file in directory will be called q1.txt
+    //example file in directory will be called namelist.txt
     infile.open(filename, ios::in);
     infile.unsetf(ios::skipws);
     infile >> c;    
@@ -20,37 +75,46 @@ int main(){
         cout<< c;
         infile >> c;
     }
+    cout << "\n";
     //-------------------------------------------Question 2 ------------------------------------------------------//
+    //-------------------------------------------Part A ------------------------------------------------------//
 
-    //-------------------------------------------Part A & B------------------------------------------------------//
-    // Part A: Read names from file and reverse them into file1.
-    // Part B: Output reversed names to console as well.
-    fstream file1;
-    fstream file2;
-    fstream infilepart2;
     string input;
-    
-    infilepart2.open("names_list_no_comma.txt", ios::in);
-    file1.open("file1.txt", ios::out | ios::trunc);
-    //cout << "Please input names to be reversed\n";
-    while(!infilepart2.fail()){
-    
-        getline(infilepart2, input);      //using this over cin since by default it stops with whitespace   
 
-        for(int i = input.size()-1; i >=0; i--)//initial name reverser
-        {
-
-            cout << input[i]; //part A output
-            file1 << input[i]; //part B File writing
-        }                   
-        cout <<"\n";
-        file1 << "\n";
-    
+    cout << "Please input names to be reversed, exit by writing 'end'\n";
+    while (getline(cin, input)) {
+        if (input == "end") {
+            break;
+        }
+        // Reverse the string and output to console
+        for (int i = input.size() - 1; i >= 0; i--) {
+            cout << input[i];
+        }
+        cout << "\n"; 
     }
-    file1.close();
+
+    //-------------------------------------------Part B ------------------------------------------------------//
+
+    fstream file1;
+    file1.open("file1.txt", ios::out | ios::trunc); 
+
+    cout << "Please input names to be reversed and put into file1, exit by writing 'end'\n";
+    while (getline(cin, input)) {
+        if (input == "end") {
+            break;
+        }
+        // Reverse the string and output to file
+        for (int i = input.size() - 1; i >= 0; i--) {
+            file1 << input[i];
+        }
+        file1 << "\n"; 
+    }
+
+    file1.close(); // Close the file
 
     //-------------------------------------------Part C ------------------------------------------------------//
     // Part C: Reopen file1 and reverse the names again into file2.
+    fstream file2;
     file1.open("file1.txt", ios::in);
     file2.open("file2.txt", ios::out | ios::trunc);
 
@@ -65,5 +129,21 @@ int main(){
     }    
     file1.close();
     file2.close();
-    infilepart2.close();
-}                   
+                 
+    //-------------------------------------------Part D ------------------------------------------------------//
+    file2.open("file2.txt", ios::in);
+    singlyLinkedList* strList = new singlyLinkedList(); 
+    while(!file2.fail()){
+        string str = "";
+        getline(file2, input);
+        for(int i = input.size()-1; i>=0; i--){
+            
+            str+=input[i];
+        }
+        strList->sortedInsert(str);
+    }
+    strList->printlist();
+
+    file2.close();
+    return 0;
+    }
