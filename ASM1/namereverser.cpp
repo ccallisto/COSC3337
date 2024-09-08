@@ -77,8 +77,9 @@ int main(){
     }
     cout << "\n";
     //-------------------------------------------Question 2 ------------------------------------------------------//
-    //-------------------------------------------Part A ------------------------------------------------------//
 
+    //-------------------------------------------Part A ------------------------------------------------------//
+    //Part A: Tae inputs from the terminal and output them back to the terminal in reverse
     string input;
 
     cout << "Please input names to be reversed, exit by writing 'end'\n";
@@ -94,7 +95,7 @@ int main(){
     }
 
     //-------------------------------------------Part B ------------------------------------------------------//
-
+    //Part B take inputs from the terminal and output thm out reversed into a file, file1
     fstream file1;
     file1.open("file1.txt", ios::out | ios::trunc); 
 
@@ -131,6 +132,12 @@ int main(){
     file2.close();
                  
     //-------------------------------------------Part D ------------------------------------------------------//
+    //Output the re-reversed names in alphabetical order
+    //my implementation involves a singly linked list to make this generic and flexible, the list does not 
+    //need to undergo a sorting algorithim because it will always be sorted.
+    //i believe this falls under the criteria because i am reading the file line by line
+    // nserting them in the correct position based on their attributes.
+
     file2.open("file2.txt", ios::in);
     singlyLinkedList* strList = new singlyLinkedList(); 
     while(!file2.fail()){
@@ -145,5 +152,6 @@ int main(){
     strList->printlist();
 
     file2.close();
+    
     return 0;
     }
