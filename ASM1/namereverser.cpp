@@ -1,116 +1,116 @@
 #include <iostream>
 #include <fstream>
-//update this to include steps A-D, comment where they are specifically
-using namespace std;
-//----------------------------Structures for assignment, Q1 is below------------------------------------------------------//
+#include <string>
 
-struct listNode{
+using namespace std;
+
+//----------------------------Structures for assignment, Q1 is below------------------------------------------------------//
+struct listNode {
     string data;
     listNode* next;
 };
 
-class singlyLinkedList{ //made this so the sort size is generic; sorry if im doing too much
-    //standard singly linked list with a head node, initialized with the record/struct listNode()
-    public:
+class singlyLinkedList {
+public:
     listNode* head;
     listNode* p1 = head;
 
-    singlyLinkedList(){
+    singlyLinkedList() {
         head = nullptr;
     }
 
-    bool isEmpty(){
+    bool isEmpty() {
         return head == nullptr;
     }
 
-    void sortedInsert(string str){  //essentially just an insertion sort that moves pointers around based on cases
-        
+    void sortedInsert(string str) {
         listNode* newNode = new listNode();
-        newNode -> data = str;
-        newNode -> next = nullptr;
+        newNode->data = str;
+        newNode->next = nullptr;
 
-        if (isEmpty()){ 
-            head = newNode;     //empty case
-            return;     
-        }
-        else if(str <=head->data){
-            newNode->next = head;
-            head = newNode;         //case for if the first node string is less than the head
+        if (isEmpty()) {
+            head = newNode; // Empty case
             return;
-        }
-        else{
+        } 
+        else if (str <= head->data) {
+            newNode->next = head;
+            head = newNode; // Case for if the first node string is less than the head
+            return;
+        } 
+        else {
             p1 = head;
-            while(p1 -> next != nullptr && p1 -> next-> data < str){ //standard (middle or end) case
-                p1 = p1->next;
+            while (p1->next != nullptr && p1->next->data < str) {
+                p1 = p1->next; // Standard (middle or end) case
             }
         }
-        newNode -> next = p1 ->next;
-        p1-> next = newNode;
 
+        newNode->next = p1->next;
+        p1->next = newNode;
     }
-    void printlist(){ //prints the list
+
+    void printlist() {
+        // Prints the list
         listNode* current = head;
-        while (current != nullptr){
-            cout << current -> data << "\n";
-            current = current -> next;
+        while (current != nullptr) {
+            cout << current->data << "\n";
+            current = current->next;
         }
     }
-
-
 };
-int main(){
-    //-------------------------------------------Question 1 ------------------------------------------------------//
 
+int main() {
+    //-------------------------------------------Question 1 ------------------------------------------------------//
     char c;
     fstream infile;
     string filename;
-    cout << "enter file name to read text from; example file in directory will be called namelist.txt\n";
+    cout << "enter file name to read text from; try inputfile.txt\n";
     cin >> filename;
-    //example file in directory will be called namelist.txt
+    
     infile.open(filename, ios::in);
     infile.unsetf(ios::skipws);
-    infile >> c;    
-
-    while(!infile.fail()){
-        cout<< c;
+    infile >> c;
+    
+    while (!infile.fail()) {
+        cout << c;
         infile >> c;
     }
     cout << "\n";
+
     //-------------------------------------------Question 2 ------------------------------------------------------//
-
+    
     //-------------------------------------------Part A ------------------------------------------------------//
-    //Part A: Tae inputs from the terminal and output them back to the terminal in reverse
+    // Part A: Take inputs from the terminal and output them back to the terminal in reverse
     string input;
-
     cout << "Please input names to be reversed, exit by writing 'end'\n";
     while (getline(cin, input)) {
         if (input == "end") {
             break;
         }
+
         // Reverse the string and output to console
         for (int i = input.size() - 1; i >= 0; i--) {
             cout << input[i];
         }
-        cout << "\n"; 
+        cout << "\n";
     }
 
     //-------------------------------------------Part B ------------------------------------------------------//
-    //Part B take inputs from the terminal and output thm out reversed into a file, file1
+    // Part B: Take inputs from the terminal and output them reversed into a file, file1
     fstream file1;
-    file1.open("file1.txt", ios::out | ios::trunc); 
-
+    file1.open("file1.txt", ios::out | ios::trunc);
+    
     cout << "Please input names to be reversed and put into file1, exit by writing 'end'\n";
     while (getline(cin, input)) {
         if (input == "end") {
             break;
         }
+
         // Reverse the string and output to file
         for (int i = input.size() - 1; i >= 0; i--) {
             file1 << input[i];
         }
-        file1 << "\n"; 
+        file1 << "\n";
     }
-
     file1.close(); // Close the file
 
     //-------------------------------------------Part C ------------------------------------------------------//
@@ -119,39 +119,32 @@ int main(){
     file1.open("file1.txt", ios::in);
     file2.open("file2.txt", ios::out | ios::trunc);
 
-    while(!file1.fail()){
+    while (!file1.fail()) {
         getline(file1, input);
-            for(int i = input.size()-1; i >=0; i--)//secondary name re-reverser
-            {
-                // cout << input[i]; //debugging output
-                file2 << input[i];
-            }                   
-            file2 << "\n";
-    }    
+        for (int i = input.size() - 1; i >= 0; i--) {
+            file2 << input[i]; // secondary name re-reverser
+        }
+        file2 << "\n";
+    }
     file1.close();
     file2.close();
-                 
-    //-------------------------------------------Part D ------------------------------------------------------//
-    //Output the re-reversed names in alphabetical order
-    //my implementation involves a singly linked list to make this generic and flexible, the list does not 
-    //need to undergo a sorting algorithim because it will always be sorted.
-    //i believe this falls under the criteria because i am reading the file line by line
-    // nserting them in the correct position based on their attributes.
 
+    //-------------------------------------------Part D ------------------------------------------------------//
+    // Output the re-reversed names in alphabetical order
     file2.open("file2.txt", ios::in);
-    singlyLinkedList* strList = new singlyLinkedList(); 
-    while(!file2.fail()){
+    singlyLinkedList* strList = new singlyLinkedList();
+
+    while (!file2.fail()) {
         string str = "";
         getline(file2, input);
-        for(int i = input.size()-1; i>=0; i--){
-            
-            str+=input[i];
+        for (int i = input.size() - 1; i >= 0; i--) {
+            str += input[i];
         }
         strList->sortedInsert(str);
     }
-    strList->printlist();
 
+    strList->printlist();
     file2.close();
-    
+
     return 0;
-    }
+}
